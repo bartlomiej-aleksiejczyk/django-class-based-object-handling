@@ -1,0 +1,6 @@
+# Changes here will be overwritten by Copier
+_commit: 35b89f1
+_src_path: gh:bartlomiej-aleksiejczyk/django-template-copier
+choosen_databse: sqlite
+is_huey_enabled: false
+project_name: django-class-based-object-handling
