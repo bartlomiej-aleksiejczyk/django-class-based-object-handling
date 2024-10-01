@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render
 from .table import Table, TableConfig
 
@@ -22,17 +23,43 @@ def my_view(request):
             "city": "Chicago",
             "attributes": {"height": "6ft", "weight": "180lbs"},
         },
+        {
+            "name": "Adam",
+            "age": 14,
+            "city": "Olsztyn",
+            "attributes": {"height": "4ft", "weight": "120lbs"},
+        },
+        {
+            "name": "Michal",
+            "age": 21,
+            "city": "Warszawa",
+            "attributes": {"height": "5ft", "weight": "123lbs"},
+        },
+        {
+            "name": "Julian",
+            "age": 26,
+            "city": "Warszawa",
+            "attributes": {"height": "6ft", "weight": "113lbs"},
+        },
     ]
     config = TableConfig(
-        ["name", "age", "city", "attributes"],
-        sortable=True,
-        page_size=5,
-        current_page=1,
+        "test_table", ["name", "age", "city", "attributes"], sortable=True
     )
+
+    page_number = request.GET.get("page", 1)
+    page_size = 5
+
+    paginator = Paginator(data, page_size)
+
+    page_obj = paginator.get_page(page_number)
 
     # Define custom template for rendering the 'attributes' column
     column_templates = {"attributes": "json_column.html"}
-
-    table = Table(data, config, column_templates=column_templates)
-
+    current_url = request.get_full_path()
+    table = Table(
+        page=page_obj,
+        config=config,
+        current_url=current_url,
+        column_templates=column_templates,
+    )
     return render(request, "my_template.html", {"table": table})

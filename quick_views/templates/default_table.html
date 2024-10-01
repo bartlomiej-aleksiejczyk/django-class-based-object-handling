@@ -5,7 +5,15 @@
             {% for column in columns %}
                 {% if sortable %}
                     <th>
-                        <a href="?sort={{ column }}">{{ column }}</a>
+                        {% if sort_column == column %}
+                            {% if sort_reverse %}
+                                <a href="{% update_url current_url table_name 'sort' column %}">▲ {{ column }}</a>
+                            {% else %}
+                                <a href="{% update_url current_url table_name 'sort' '-'|add:column %}">▼ {{ column }}</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% update_url current_url table_name 'sort' column %}">{{ column }}</a>
+                        {% endif %}
                     </th>
                 {% else %}
                     <th>{{ column }}</th>
@@ -18,7 +26,7 @@
             <tr>
                 {% for column in columns %}
                     <td>
-                        {% if column_templates and column|get_item:column %}
+                        {% if column_templates and column in column_templates %}
                             {% include column_templates|get_item:column with value=row|get_item:column %}
                         {% else %}
                             {{ row|get_item:column }}
@@ -32,8 +40,12 @@
 {# Pagination Controls #}
 <div class="pagination">
     {% if is_paginated %}
-        {% if has_previous %}<a href="?page={{ current_page|add:'-1' }}">Previous</a>{% endif %}
+        {% if has_previous %}
+            <a href="{% update_url current_url table_name 'page' current_page|add:'-1' %}">Previous</a>
+        {% endif %}
         Page {{ current_page }} of {{ total_pages }}
-        {% if has_next %}<a href="?page={{ current_page|add:'1' }}">Next</a>{% endif %}
+        {% if has_next %}
+            <a href="{% update_url current_url table_name 'page' current_page|add:'1' %}">Next</a>
+        {% endif %}
     {% endif %}
 </div>
