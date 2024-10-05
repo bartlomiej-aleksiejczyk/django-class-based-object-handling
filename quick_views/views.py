@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
-from .table import Table, TableConfig
+from .view_fragments.table.table import Table, TableConfig
 
 
 def my_view(request):
