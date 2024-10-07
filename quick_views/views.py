@@ -42,12 +42,8 @@ def my_view(request):
             "attributes": {"height": "6ft", "weight": "113lbs"},
         },
     ]
-    config = TableConfig(
-        "test_table", ["name", "age", "city", "attributes"], sortable=True
-    )
 
     page_number = request.GET.get("page", 1)
-    page_size = 5
 
     paginator = Paginator(data, page_size)
 
@@ -55,11 +51,18 @@ def my_view(request):
 
     # Define custom template for rendering the 'attributes' column
     column_templates = {"attributes": "json_column.html"}
-    current_url = request.get_full_path()
-    table = Table(
-        page=page_obj,
-        config=config,
-        current_url=current_url,
+
+    config = TableConfig(
+        "test_table",
+        ["name", "age", "city", "attributes"],
+        sortable=True,
+        is_paginated=True,
+        current_url=request.get_full_path(),
         column_templates=column_templates,
+    )
+
+    table = Table(
+        data=page_obj.object_list(),
+        config=config,
     )
     return render(request, "my_template.html", {"table": table})
